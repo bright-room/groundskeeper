@@ -1,0 +1,26 @@
+{
+  "name": "@groundskeeper/node",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "node --env-file=../../.env --import tsx src/main.ts",
+    "tunnel": "smee --target http://localhost:3000/webhook --url",
+    "smoke:llm": "node --env-file=../../.env --import tsx scripts/llm-smoke.ts",
+    "test": "vitest run",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@groundskeeper/adapters": "workspace:*",
+    "@groundskeeper/core": "workspace:*",
+    "zod": "4.6.5"
+  },
+  "devDependencies": {
+    "@groundskeeper/tsconfig": "workspace:*",
+    "@types/node": "24.19.1",
+    "smee-client": "5.0.0",
+    "tsx": "4.23.15",
+    "typescript": "7.0.2",
+    "vitest": "5.0.3"
+  }
+}

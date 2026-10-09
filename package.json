@@ -2,28 +2,21 @@
   "name": "groundskeeper",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@12.4.2",
   "engines": {
-    "node": ">=22"
+    "node": ">=24"
   },
   "scripts": {
-    "dev": "node --env-file=.env --import tsx src/runtime/node/main.ts",
-    "tunnel": "smee --target http://localhost:3000/webhook --url",
-    "test": "vitest run",
-    "typecheck": "tsc --noEmit",
-    "smoke:llm": "node --env-file=.env --import tsx scripts/llm-smoke.ts"
-  },
-  "dependencies": {
-    "@anthropic-ai/sdk": "^0.132.0",
-    "@octokit/auth-app": "^8.3.1",
-    "@octokit/rest": "^22.0.1",
-    "yaml": "^2.9.1",
-    "zod": "^4.6.5"
+    "dev": "pnpm --filter @groundskeeper/node dev",
+    "tunnel": "pnpm --filter @groundskeeper/node tunnel",
+    "smoke:llm": "pnpm --filter @groundskeeper/node smoke:llm",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
   },
   "devDependencies": {
-    "@types/node": "^26.6.4",
-    "smee-client": "^5.0.0",
-    "tsx": "^4.23.15",
-    "typescript": "^7.0.2",
-    "vitest": "^5.0.3"
+    "@biomejs/biome": "2.5.15"
   }
 }
