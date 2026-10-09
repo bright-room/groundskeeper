@@ -459,7 +459,7 @@ const MAX_LENGTH = 500;
 
 // LLM の出力は投稿内容に誘導されうるため、コメントに埋め込む前にメンションを無効化し長さを制限する
 export function sanitizeForComment(text: string): string {
-  const neutralized = text.replaceAll("@", "@​");
+  const neutralized = text.replaceAll("@", "@\u200b");
   return neutralized.length > MAX_LENGTH ? `${neutralized.slice(0, MAX_LENGTH)}…` : neutralized;
 }
 ```
