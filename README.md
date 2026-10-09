@@ -9,12 +9,16 @@ GitHub App that takes care of repositories on behalf of maintainers — issue tr
 
 ## 構成
 
-| ディレクトリ | 役割 |
+pnpm workspace の monorepo。
+
+| パッケージ | 役割 |
 |---|---|
-| `src/core` | ランタイム非依存のドメイン・ports・usecase |
-| `src/webhook` | 署名検証とイベント → ジョブ変換（Web 標準 API のみ） |
-| `src/adapters` | GitHub（Octokit）・設定ファイル・Claude API |
-| `src/runtime/node` | ローカル実行用の HTTP サーバとメモリキュー |
+| `packages/core` | ランタイム非依存のドメイン・ports・usecase・Webhook 処理（Web 標準 API のみ） |
+| `packages/adapters` | GitHub（Octokit）・設定ファイル・Claude API |
+| `packages/tsconfig` | 共通 tsconfig |
+| `apps/node` | ローカル実行用の HTTP サーバとメモリキュー |
+
+ツールのバージョンは `mise.toml` で管理する（`mise install`）。
 
 ## GitHub App の作成
 
@@ -30,7 +34,7 @@ GitHub App that takes care of repositories on behalf of maintainers — issue tr
 
 ```bash
 pnpm install
-cp .env.example .env                      # 値を埋める。秘密鍵は改行を \n にして 1 行で書く
+cp .env.example .env                      # リポジトリ直下に置く。値を埋める。秘密鍵は改行を \n にして 1 行で書く
 pnpm dev                                  # http://localhost:3000/webhook
 pnpm tunnel https://smee.io/<channel>     # 別ターミナル
 ```

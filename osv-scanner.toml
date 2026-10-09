@@ -1,0 +1,7 @@
+# OSV-Scanner ignore policy
+# 対応不能な既知の脆弱性を無視する場合は、理由と再確認日（ignoreUntil）を付けてここに追記する。
+#
+# [[IgnoredVulns]]
+# id = "GHSA-xxxx-xxxx-xxxx"
+# ignoreUntil = 2026-12-31
+# reason = "..."
