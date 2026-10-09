@@ -31,7 +31,12 @@ export class MemoryQueue implements JobQueue {
         return;
       } catch (e) {
         if (attempt >= this.opts.maxRetries) {
-          this.opts.onFailure(job, e);
+          try {
+            this.opts.onFailure(job, e);
+          } catch (callbackError) {
+            // enqueue の Promise は誰も待たないため、ここで止めないと unhandled rejection になる
+            console.error("onFailure threw", callbackError);
+          }
           return;
         }
         await new Promise((r) => setTimeout(r, this.opts.baseDelayMs * 2 ** attempt));

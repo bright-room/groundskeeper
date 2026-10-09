@@ -46,4 +46,21 @@ describe("MemoryQueue", () => {
     expect(r.calls()).toBe(4);
     expect(r.failures).toHaveLength(1);
   });
+
+  it("onFailure が例外を投げてもキューは正常に終わる", async () => {
+    const queue = new MemoryQueue(
+      async () => {
+        throw new Error("fail");
+      },
+      {
+        maxRetries: 0,
+        baseDelayMs: 0,
+        onFailure: () => {
+          throw new Error("callback broke");
+        },
+      },
+    );
+    await queue.enqueue(job);
+    await expect(queue.drain()).resolves.toBeUndefined();
+  });
 });

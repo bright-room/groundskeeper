@@ -6,8 +6,8 @@ import { WebhookServer } from "../src/server";
 let close: (() => void) | undefined;
 afterEach(() => close?.());
 
-function start(onWebhook: (req: WebhookRequest) => Promise<number>) {
-  const server = new WebhookServer(onWebhook).listen(0);
+function start(onWebhook: (req: WebhookRequest) => Promise<number>, maxBodyBytes?: number) {
+  const server = new WebhookServer(onWebhook, maxBodyBytes).listen(0);
   close = () => server.close();
   return new Promise<string>((resolve) =>
     server.on("listening", () =>
@@ -38,5 +38,16 @@ describe("WebhookServer", () => {
     const url = await start(async () => 202);
     expect((await fetch(`${url}/healthz`)).status).toBe(200);
     expect((await fetch(`${url}/other`)).status).toBe(404);
+  });
+
+  it("上限を超える本文は 413 でハンドラーに渡さない", async () => {
+    let called = false;
+    const url = await start(async () => {
+      called = true;
+      return 202;
+    }, 10);
+    const res = await fetch(`${url}/webhook`, { method: "POST", body: "x".repeat(11) });
+    expect(res.status).toBe(413);
+    expect(called).toBe(false);
   });
 });

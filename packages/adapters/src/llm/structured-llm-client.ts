@@ -23,6 +23,7 @@ export class StructuredLLMClient {
   private readonly client: Anthropic;
 
   constructor(opts: LLMOptions) {
+    if (opts.baseURL) assertSecureBaseURL(opts.baseURL);
     this.client = new Anthropic({
       apiKey: opts.apiKey ?? null,
       baseURL: opts.baseURL ?? null,
@@ -51,4 +52,14 @@ export class StructuredLLMClient {
     if (block?.type !== "tool_use") throw new Error(`LLM did not call ${req.toolName}`);
     return req.schema.parse(block.input);
   }
+}
+
+const LOCAL_HOSTS = new Set(["localhost", "127.0.0.1", "[::1]"]);
+
+// API キーや Gateway のトークンを平文で送らないよう、http はローカルのみ許可する
+function assertSecureBaseURL(baseURL: string): void {
+  const url = new URL(baseURL);
+  if (url.protocol === "https:") return;
+  if (url.protocol === "http:" && LOCAL_HOSTS.has(url.hostname)) return;
+  throw new Error(`ANTHROPIC_BASE_URL must use https: ${url.origin}`);
 }

@@ -1,8 +1,16 @@
 import { createServer, type IncomingMessage, type Server } from "node:http";
 import type { WebhookRequest } from "@groundskeeper/core";
 
+// GitHub の webhook ペイロードの上限
+const DEFAULT_MAX_BODY_BYTES = 25 * 1024 * 1024;
+
+class BodyTooLargeError extends Error {}
+
 export class WebhookServer {
-  constructor(private readonly onWebhook: (req: WebhookRequest) => Promise<number>) {}
+  constructor(
+    private readonly onWebhook: (req: WebhookRequest) => Promise<number>,
+    private readonly maxBodyBytes = DEFAULT_MAX_BODY_BYTES,
+  ) {}
 
   listen(port: number): Server {
     const server = createServer(async (req, res) => {
@@ -14,11 +22,19 @@ export class WebhookServer {
         res.writeHead(404).end();
         return;
       }
+      let rawBody: string;
+      try {
+        rawBody = await readBody(req, this.maxBodyBytes);
+      } catch (e) {
+        if (!(e instanceof BodyTooLargeError)) throw e;
+        res.writeHead(413, { connection: "close" }).end();
+        return;
+      }
       try {
         const status = await this.onWebhook({
           event: header(req, "x-github-event"),
           signature: header(req, "x-hub-signature-256"),
-          rawBody: await readBody(req),
+          rawBody,
         });
         res.writeHead(status).end();
       } catch (e) {
@@ -36,8 +52,14 @@ function header(req: IncomingMessage, name: string): string | null {
   return typeof v === "string" ? v : null;
 }
 
-async function readBody(req: IncomingMessage): Promise<string> {
+// 署名検証は本文を読み終えてから行うため、未検証のリクエストでメモリを使い切らないよう上限を設ける
+async function readBody(req: IncomingMessage, maxBytes: number): Promise<string> {
   const chunks: Buffer[] = [];
-  for await (const chunk of req) chunks.push(chunk as Buffer);
+  let size = 0;
+  for await (const chunk of req) {
+    size += (chunk as Buffer).length;
+    if (size > maxBytes) throw new BodyTooLargeError();
+    chunks.push(chunk as Buffer);
+  }
   return Buffer.concat(chunks).toString("utf8");
 }

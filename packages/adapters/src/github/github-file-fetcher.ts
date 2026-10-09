@@ -17,7 +17,8 @@ export class GitHubFileFetcher implements FileFetcher {
         path,
         mediaType: { format: "raw" },
       });
-      return String(res.data);
+      // パスがディレクトリの場合は raw 指定でも配列が返る
+      return typeof res.data === "string" ? res.data : null;
     } catch (e) {
       if (isStatus(e, 404)) return null;
       throw e;
