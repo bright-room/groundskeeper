@@ -88,7 +88,7 @@ jobs:
           PR_NUMBER: ${{ github.event.number }}
           PR_AUTHOR: ${{ github.event.pull_request.user.login }}
           PR_AUTHOR_TYPE: ${{ github.event.pull_request.user.type }}
-          OWNER_MENTION: "@kukv"
+          OWNER_MENTION: "@bright-room/br-maintainers"
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: |
           mentions="$OWNER_MENTION"
