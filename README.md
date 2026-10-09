@@ -1,2 +1,55 @@
 # groundskeeper
+
 GitHub App that takes care of repositories on behalf of maintainers — issue triage, comment moderation and more.
+
+> 現在は足回り（Webhook 受信・GitHub App 認証・設定読み込み・LLM 呼び出し）のみ。
+> ジョブは取得した Issue / コメントをログに出すだけで、ラベル付与などの判定ロジックは未実装。
+
+設計: `docs/superpowers/specs/2026-10-09-github-maintainer-app-design.md`
+
+## 構成
+
+| ディレクトリ | 役割 |
+|---|---|
+| `src/core` | ランタイム非依存のドメイン・ports・usecase |
+| `src/webhook` | 署名検証とイベント → ジョブ変換（Web 標準 API のみ） |
+| `src/adapters` | GitHub（Octokit）・設定ファイル・Claude API |
+| `src/runtime/node` | ローカル実行用の HTTP サーバとメモリキュー |
+
+## GitHub App の作成
+
+1 アカウント（org / user）につき 1 つ作成する。
+
+- Repository permissions: Issues = Read and write, Contents = Read-only, Metadata = Read-only
+- Subscribe to events: Issues, Issue comment
+- Webhook URL: ローカルでは smee.io のチャンネル URL（https://smee.io/new で発行）
+- Webhook secret: 任意の文字列（`.env` の `GITHUB_WEBHOOK_SECRET` と一致させる）
+- 作成後に Private key を生成し、対象リポジトリにインストールする
+
+## ローカル実行
+
+```bash
+pnpm install
+cp .env.example .env                      # 値を埋める。秘密鍵は改行を \n にして 1 行で書く
+pnpm dev                                  # http://localhost:3000/webhook
+pnpm tunnel https://smee.io/<channel>     # 別ターミナル
+```
+
+秘密鍵の読み込みでエラーになる場合は PKCS#8 に変換する:
+`openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in app.pem -out app-pkcs8.pem`
+
+### 動作確認
+
+1. インストールしたリポジトリでテスト Issue を作る → `pnpm dev` のターミナルに
+   `[issue:opened] owner/repo#N "タイトル" labels=[...]` が出る
+2. その Issue にコメントする → `[comment:created] ... by <login>` が出る
+3. `pnpm smoke:llm` → `{ language: ..., sentiment: ... }` が返る（引数でモデルを指定可）
+
+Cloudflare AI Gateway を経由する場合は `.env` に `ANTHROPIC_BASE_URL` と
+`ANTHROPIC_EXTRA_HEADERS`（例: `{"cf-aig-authorization":"Bearer <token>"}`）を設定する。
+
+## 設定ファイル（任意）
+
+`.github/groundskeeper.yml` をリポジトリ、またはアカウントの `.github` リポジトリに置く。
+リポジトリ → `.github` リポジトリ → デフォルトの順で、最初に見つかったものを使う。
+キーの内容は判定ロジックの設計確定後に決める。
