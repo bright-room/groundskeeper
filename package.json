@@ -1,0 +1,22 @@
+{
+  "name": "groundskeeper",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@12.4.2",
+  "engines": {
+    "node": ">=26"
+  },
+  "scripts": {
+    "dev": "pnpm --filter @groundskeeper/node dev",
+    "tunnel": "pnpm --filter @groundskeeper/node tunnel",
+    "smoke:llm": "pnpm --filter @groundskeeper/node smoke:llm",
+    "lint": "biome check",
+    "lint:fix": "biome check --write",
+    "format": "biome format --write",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15"
+  }
+}
