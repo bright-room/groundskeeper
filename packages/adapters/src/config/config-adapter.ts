@@ -1,4 +1,10 @@
-import { type AppConfig, CONFIG_PATH, type ConfigPort, type RepoRef, resolveConfig } from "@groundskeeper/core";
+import {
+  type AppConfig,
+  CONFIG_PATH,
+  type ConfigPort,
+  type RepoRef,
+  resolveConfig,
+} from "@groundskeeper/core";
 import { parse } from "yaml";
 import type { FileFetcher } from "../github/github-file-fetcher";
 
@@ -8,7 +14,8 @@ export class ConfigAdapter implements ConfigPort {
 
   async load(repo: RepoRef): Promise<AppConfig> {
     const text =
-      (await this.files.fetch(repo, repo.repo, CONFIG_PATH)) ?? (await this.files.fetch(repo, ".github", CONFIG_PATH));
+      (await this.files.fetch(repo, repo.repo, CONFIG_PATH)) ??
+      (await this.files.fetch(repo, ".github", CONFIG_PATH));
     return resolveConfig(text === null ? {} : parse(text));
   }
 }

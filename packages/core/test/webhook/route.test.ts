@@ -30,7 +30,9 @@ describe("toJob", () => {
   });
 
   it("PR・削除済みコメント・対象外のイベントは無視する", () => {
-    expect(toJob("issues", { ...base, issue: { number: 10, pull_request: {} }, action: "opened" })).toBeNull();
+    expect(
+      toJob("issues", { ...base, issue: { number: 10, pull_request: {} }, action: "opened" }),
+    ).toBeNull();
     expect(toJob("issue_comment", { ...base, action: "deleted", comment: { id: 1 } })).toBeNull();
     expect(toJob("push", { ...base, action: "opened" })).toBeNull();
   });

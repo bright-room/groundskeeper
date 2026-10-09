@@ -21,7 +21,9 @@ describe("ConfigAdapter", () => {
   });
 
   it("リポジトリに無ければアカウントの .github リポジトリを使う", async () => {
-    const config = new ConfigAdapter(fetcher({ [`.github/${CONFIG_PATH}`]: "labels:\n  triage: org-triage\n" }));
+    const config = new ConfigAdapter(
+      fetcher({ [`.github/${CONFIG_PATH}`]: "labels:\n  triage: org-triage\n" }),
+    );
     expect((await config.load(REPO)).labels.triage).toBe("org-triage");
   });
 

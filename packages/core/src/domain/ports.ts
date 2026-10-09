@@ -20,7 +20,10 @@ export interface GitHubPort {
   listOpenIssues(repo: RepoRef): Promise<IssueSummary[]>;
   getRepoContext(repo: RepoRef): Promise<RepoContext>;
   listLabels(repo: RepoRef): Promise<RepoLabel[]>;
-  createLabel(repo: RepoRef, label: { name: string; color: string; description: string }): Promise<void>;
+  createLabel(
+    repo: RepoRef,
+    label: { name: string; color: string; description: string },
+  ): Promise<void>;
   addLabels(repo: RepoRef, issueNumber: number, labels: string[]): Promise<void>;
   removeLabel(repo: RepoRef, issueNumber: number, label: string): Promise<void>;
   createComment(repo: RepoRef, issueNumber: number, body: string): Promise<void>;
@@ -35,7 +38,11 @@ export interface LLMPort {
     openIssues: IssueSummary[];
     repoContext: RepoContext;
   }): Promise<IssueAssessment>;
-  assessComment(input: { model: string; issue: Issue; comment: Comment }): Promise<CommentAssessment>;
+  assessComment(input: {
+    model: string;
+    issue: Issue;
+    comment: Comment;
+  }): Promise<CommentAssessment>;
   triageIssue(input: {
     model: string;
     issue: Issue;

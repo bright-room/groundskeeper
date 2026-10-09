@@ -1,8 +1,13 @@
-import { describe, expect, it } from "vitest";
 import type { Job } from "@groundskeeper/core";
+import { describe, expect, it } from "vitest";
 import { MemoryQueue } from "../src/memory-queue";
 
-const job: Job = { type: "issue", action: "opened", repo: { owner: "a", repo: "b", installationId: 1 }, issueNumber: 1 };
+const job: Job = {
+  type: "issue",
+  action: "opened",
+  repo: { owner: "a", repo: "b", installationId: 1 },
+  issueNumber: 1,
+};
 
 function run(failTimes: number) {
   let calls = 0;

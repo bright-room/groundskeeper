@@ -21,19 +21,25 @@ function setup() {
 describe("WebhookReceiver", () => {
   it("署名が不正なら 401 で何も積まない", async () => {
     const { jobs, receiver } = setup();
-    expect(await receiver.receive({ event: "issues", signature: "sha256=00", rawBody: body })).toBe(401);
+    expect(await receiver.receive({ event: "issues", signature: "sha256=00", rawBody: body })).toBe(
+      401,
+    );
     expect(jobs).toEqual([]);
   });
 
   it("対象イベントは積んで 202", async () => {
     const { jobs, receiver } = setup();
-    expect(await receiver.receive({ event: "issues", signature: await sign(body), rawBody: body })).toBe(202);
+    expect(
+      await receiver.receive({ event: "issues", signature: await sign(body), rawBody: body }),
+    ).toBe(202);
     expect(jobs).toHaveLength(1);
   });
 
   it("対象外イベントは積まずに 202", async () => {
     const { jobs, receiver } = setup();
-    expect(await receiver.receive({ event: "ping", signature: await sign(body), rawBody: body })).toBe(202);
+    expect(
+      await receiver.receive({ event: "ping", signature: await sign(body), rawBody: body }),
+    ).toBe(202);
     expect(jobs).toEqual([]);
   });
 });

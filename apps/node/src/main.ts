@@ -10,7 +10,10 @@ import { MemoryQueue } from "./memory-queue";
 import { WebhookServer } from "./server";
 
 const env = loadEnv();
-const clients = new InstallationClients({ appId: env.githubAppId, privateKey: env.githubPrivateKey });
+const clients = new InstallationClients({
+  appId: env.githubAppId,
+  privateKey: env.githubPrivateKey,
+});
 
 const processor = new JobProcessor({
   github: new GitHubAdapter(clients),

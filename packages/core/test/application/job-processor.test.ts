@@ -40,7 +40,13 @@ describe("JobProcessor", () => {
       },
     });
     await expect(
-      processor.process({ type: "comment", action: "created", repo: REPO, issueNumber: 10, commentId: 999 }),
+      processor.process({
+        type: "comment",
+        action: "created",
+        repo: REPO,
+        issueNumber: 10,
+        commentId: 999,
+      }),
     ).resolves.toBeUndefined();
     expect(logs).toEqual([]);
   });
@@ -51,8 +57,8 @@ describe("JobProcessor", () => {
         throw new Error("GitHub down");
       },
     });
-    await expect(processor.process({ type: "issue", action: "opened", repo: REPO, issueNumber: 10 })).rejects.toThrow(
-      "GitHub down",
-    );
+    await expect(
+      processor.process({ type: "issue", action: "opened", repo: REPO, issueNumber: 10 }),
+    ).rejects.toThrow("GitHub down");
   });
 });

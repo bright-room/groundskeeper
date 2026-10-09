@@ -29,7 +29,9 @@ export function resolveConfig(raw: unknown): AppConfig {
   return {
     labels: pickStrings(DEFAULT_CONFIG.labels, isRecord(obj.labels) ? obj.labels : {}),
     priorities:
-      Array.isArray(priorities) && priorities.length > 0 && priorities.every((p) => typeof p === "string")
+      Array.isArray(priorities) &&
+      priorities.length > 0 &&
+      priorities.every((p) => typeof p === "string")
         ? priorities
         : DEFAULT_CONFIG.priorities,
     models: pickStrings(DEFAULT_CONFIG.models, isRecord(obj.models) ? obj.models : {}),
@@ -40,7 +42,10 @@ function isRecord(v: unknown): v is Record<string, unknown> {
   return typeof v === "object" && v !== null && !Array.isArray(v);
 }
 
-function pickStrings<T extends Record<string, string>>(defaults: T, src: Record<string, unknown>): T {
+function pickStrings<T extends Record<string, string>>(
+  defaults: T,
+  src: Record<string, unknown>,
+): T {
   const out = { ...defaults };
   for (const key of Object.keys(defaults) as (keyof T & string)[]) {
     const v = src[key];

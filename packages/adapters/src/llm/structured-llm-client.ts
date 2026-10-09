@@ -48,7 +48,7 @@ export class StructuredLLMClient {
       tool_choice: { type: "tool", name: req.toolName },
     });
     const block = res.content.find((b) => b.type === "tool_use");
-    if (!block || block.type !== "tool_use") throw new Error(`LLM did not call ${req.toolName}`);
+    if (block?.type !== "tool_use") throw new Error(`LLM did not call ${req.toolName}`);
     return req.schema.parse(block.input);
   }
 }

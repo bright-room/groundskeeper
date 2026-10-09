@@ -10,6 +10,9 @@ const result = await llm.call({
   user: "今日はいい天気で気分がいい。",
   toolName: "report",
   toolDescription: "判定結果を報告する",
-  schema: z.object({ language: z.string(), sentiment: z.enum(["positive", "neutral", "negative"]) }),
+  schema: z.object({
+    language: z.string(),
+    sentiment: z.enum(["positive", "neutral", "negative"]),
+  }),
 });
 console.log(result);

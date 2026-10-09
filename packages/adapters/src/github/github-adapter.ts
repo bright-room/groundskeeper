@@ -30,7 +30,9 @@ export class GitHubAdapter implements GitHubPort {
       body: data.body ?? "",
       state: data.state === "closed" ? "closed" : "open",
       author: toActor(data.user),
-      labels: data.labels.map((l) => (typeof l === "string" ? l : (l.name ?? ""))).filter((l) => l !== ""),
+      labels: data.labels
+        .map((l) => (typeof l === "string" ? l : (l.name ?? "")))
+        .filter((l) => l !== ""),
     };
   }
 
@@ -44,10 +46,19 @@ export class GitHubAdapter implements GitHubPort {
 
   async listOpenIssues(r: RepoRef): Promise<IssueSummary[]> {
     const { octokit, owner, repo } = this.ctx(r);
-    const { data } = await octokit.rest.issues.listForRepo({ owner, repo, state: "open", per_page: 100 });
+    const { data } = await octokit.rest.issues.listForRepo({
+      owner,
+      repo,
+      state: "open",
+      per_page: 100,
+    });
     return data
       .filter((i) => !i.pull_request)
-      .map((i) => ({ number: i.number, title: i.title, bodyExcerpt: (i.body ?? "").slice(0, ISSUE_EXCERPT_LENGTH) }));
+      .map((i) => ({
+        number: i.number,
+        title: i.title,
+        bodyExcerpt: (i.body ?? "").slice(0, ISSUE_EXCERPT_LENGTH),
+      }));
   }
 
   async getRepoContext(r: RepoRef): Promise<RepoContext> {
@@ -60,16 +71,26 @@ export class GitHubAdapter implements GitHubPort {
     } catch (e) {
       if (!isStatus(e, 404)) throw e;
     }
-    return { description: data.description ?? "", readmeExcerpt: readme.slice(0, README_EXCERPT_LENGTH) };
+    return {
+      description: data.description ?? "",
+      readmeExcerpt: readme.slice(0, README_EXCERPT_LENGTH),
+    };
   }
 
   async listLabels(r: RepoRef): Promise<RepoLabel[]> {
     const { octokit, owner, repo } = this.ctx(r);
-    const labels = await octokit.paginate(octokit.rest.issues.listLabelsForRepo, { owner, repo, per_page: 100 });
+    const labels = await octokit.paginate(octokit.rest.issues.listLabelsForRepo, {
+      owner,
+      repo,
+      per_page: 100,
+    });
     return labels.map((l) => ({ name: l.name, description: l.description ?? "" }));
   }
 
-  async createLabel(r: RepoRef, label: { name: string; color: string; description: string }): Promise<void> {
+  async createLabel(
+    r: RepoRef,
+    label: { name: string; color: string; description: string },
+  ): Promise<void> {
     const { octokit, owner, repo } = this.ctx(r);
     await octokit.rest.issues.createLabel({ owner, repo, ...label });
   }
@@ -107,7 +128,11 @@ export class GitHubAdapter implements GitHubPort {
   async getPermission(r: RepoRef, login: string): Promise<Permission> {
     const { octokit, owner, repo } = this.ctx(r);
     try {
-      const { data } = await octokit.rest.repos.getCollaboratorPermissionLevel({ owner, repo, username: login });
+      const { data } = await octokit.rest.repos.getCollaboratorPermissionLevel({
+        owner,
+        repo,
+        username: login,
+      });
       return toPermission(data.role_name);
     } catch (e) {
       if (isStatus(e, 404)) return "none";

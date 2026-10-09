@@ -13,7 +13,11 @@ export type WebhookPayload = {
 export function toJob(event: string, payload: WebhookPayload): Job | null {
   const { action, installation, repository, issue, comment } = payload;
   if (!action || !installation || !repository || !issue) return null;
-  const repo = { owner: repository.owner.login, repo: repository.name, installationId: installation.id };
+  const repo = {
+    owner: repository.owner.login,
+    repo: repository.name,
+    installationId: installation.id,
+  };
 
   // PR も issues / issue_comment で届くが、現状のスコープ外
   if (issue.pull_request) return null;

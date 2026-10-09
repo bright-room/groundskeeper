@@ -1,6 +1,6 @@
 import type { AddressInfo } from "node:net";
-import { afterEach, describe, expect, it } from "vitest";
 import type { WebhookRequest } from "@groundskeeper/core";
+import { afterEach, describe, expect, it } from "vitest";
 import { WebhookServer } from "../src/server";
 
 let close: (() => void) | undefined;
@@ -10,7 +10,9 @@ function start(onWebhook: (req: WebhookRequest) => Promise<number>) {
   const server = new WebhookServer(onWebhook).listen(0);
   close = () => server.close();
   return new Promise<string>((resolve) =>
-    server.on("listening", () => resolve(`http://localhost:${(server.address() as AddressInfo).port}`)),
+    server.on("listening", () =>
+      resolve(`http://localhost:${(server.address() as AddressInfo).port}`),
+    ),
   );
 }
 
