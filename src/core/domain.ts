@@ -34,6 +34,7 @@ export type CommentAssessment = { suspicious: boolean; reason: string };
 
 export type TriageResult = { labels: string[]; priority: string; reason: string };
 
+// action は webhook の値をそのまま渡す。どのアクションを処理するかは core が決める
 export type Job =
-  | { type: "issue"; action: "opened" | "edited"; repo: RepoRef; issueNumber: number }
-  | { type: "comment"; repo: RepoRef; issueNumber: number; commentId: number };
+  | { type: "issue"; action: string; repo: RepoRef; issueNumber: number }
+  | { type: "comment"; action: string; repo: RepoRef; issueNumber: number; commentId: number };
