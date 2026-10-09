@@ -26,7 +26,7 @@ pnpm workspace の monorepo。
 
 - Repository permissions: Issues = Read and write, Contents = Read-only, Metadata = Read-only
 - Subscribe to events: Issues, Issue comment
-- Webhook URL: ローカルでは smee.io のチャンネル URL（https://smee.io/new で発行）
+- Webhook URL: ローカルでは `pnpm tunnel` が表示する URL の末尾に `/webhook` を付けたもの
 - Webhook secret: 任意の文字列（`.env` の `GITHUB_WEBHOOK_SECRET` と一致させる）
 - 作成後に Private key を生成し、対象リポジトリにインストールする
 
@@ -36,8 +36,12 @@ pnpm workspace の monorepo。
 pnpm install
 cp .env.example .env                      # リポジトリ直下に置く。値を埋める。秘密鍵は改行を \n にして 1 行で書く
 pnpm dev                                  # http://localhost:3000/webhook
-pnpm tunnel https://smee.io/<channel>     # 別ターミナル
+pnpm tunnel                               # 別ターミナル。Cloudflare Tunnel で一時 URL を発行する
 ```
+
+`pnpm tunnel` は `https://<ランダム>.trycloudflare.com` を表示する（Cloudflare アカウント不要）。
+URL は起動のたびに変わるので、そのたびに App の Webhook URL を `https://<ランダム>.trycloudflare.com/webhook` に更新する。
+`cloudflared` は `mise install` で入る。
 
 秘密鍵の読み込みでエラーになる場合は PKCS#8 に変換する:
 `openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in app.pem -out app-pkcs8.pem`

@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --env-file=../../.env --import tsx src/main.ts",
-    "tunnel": "smee --target http://localhost:3000/webhook --url",
+    "tunnel": "cloudflared tunnel --url http://localhost:3000",
     "smoke:llm": "node --env-file=../../.env --import tsx scripts/llm-smoke.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
@@ -18,7 +18,6 @@
   "devDependencies": {
     "@groundskeeper/tsconfig": "workspace:*",
     "@types/node": "26.6.4",
-    "smee-client": "5.0.0",
     "tsx": "4.23.15",
     "typescript": "7.0.2",
     "vitest": "5.0.3"
