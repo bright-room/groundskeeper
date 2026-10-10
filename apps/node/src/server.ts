@@ -31,11 +31,18 @@ export class WebhookServer {
         return;
       }
       try {
+        const event = header(req, "x-github-event");
         const status = await this.onWebhook({
-          event: header(req, "x-github-event"),
+          event,
           signature: header(req, "x-hub-signature-256"),
           rawBody,
         });
+        // 401（secret 不一致）などは GitHub 側にしか表示されないので、ここでも出しておく
+        if (status >= 400) {
+          console.warn(
+            `webhook rejected: ${status} event=${event} delivery=${header(req, "x-github-delivery")}`,
+          );
+        }
         res.writeHead(status).end();
       } catch (e) {
         console.error("webhook handling failed", e);

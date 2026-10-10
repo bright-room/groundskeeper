@@ -1,10 +1,13 @@
 import type { AddressInfo } from "node:net";
 import type { WebhookRequest } from "@groundskeeper/core";
-import { afterEach, describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { WebhookServer } from "../src/server";
 
 let close: (() => void) | undefined;
-afterEach(() => close?.());
+afterEach(() => {
+  close?.();
+  vi.restoreAllMocks();
+});
 
 function start(onWebhook: (req: WebhookRequest) => Promise<number>, maxBodyBytes?: number) {
   const server = new WebhookServer(onWebhook, maxBodyBytes).listen(0);
@@ -49,5 +52,16 @@ describe("WebhookServer", () => {
     const res = await fetch(`${url}/webhook`, { method: "POST", body: "x".repeat(11) });
     expect(res.status).toBe(413);
     expect(called).toBe(false);
+  });
+
+  it("4xx を返したときは event と delivery を警告ログに出す", async () => {
+    const warn = vi.spyOn(console, "warn").mockImplementation(() => {});
+    const url = await start(async () => 401);
+    await fetch(`${url}/webhook`, {
+      method: "POST",
+      headers: { "x-github-event": "issues", "x-github-delivery": "d-1" },
+      body: "{}",
+    });
+    expect(warn).toHaveBeenCalledWith("webhook rejected: 401 event=issues delivery=d-1");
   });
 });
