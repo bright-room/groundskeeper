@@ -69,10 +69,10 @@ cp .env.example .env
 | `ANTHROPIC_BASE_URL` | Cloudflare AI Gateway の URL | AI Gateway を経由するとき |
 | `ANTHROPIC_EXTRA_HEADERS` | 追加ヘッダー（JSON）。例: `{"cf-aig-authorization":"Bearer <token>"}` | AI Gateway を経由するとき |
 
-`GITHUB_PRIVATE_KEY` は次のコマンドで追記する。鍵の中身は画面に出ない。
-`.env` にすでに `GITHUB_PRIVATE_KEY=` の行がある場合は、先に消しておく。
+`GITHUB_PRIVATE_KEY` は次のコマンドで設定する。`.env.example` 由来の空の行を消してから追記し、鍵の中身は画面に出ない。
 
 ```bash
+grep -v '^GITHUB_PRIVATE_KEY=' .env > .env.tmp && mv .env.tmp .env
 printf 'GITHUB_PRIVATE_KEY="%s"\n' "$(awk 'NR>1{printf "\\n"}{printf "%s",$0}' <path/to/private-key.pem>)" >> .env
 grep -c '^GITHUB_PRIVATE_KEY="-----BEGIN' .env   # 1 と出れば OK
 ```
@@ -116,7 +116,7 @@ quick tunnel の URL は起動のたびに変わる。
 | `pnpm dev` に `webhook rejected: 401 ...` が出る | `.env` の `GITHUB_WEBHOOK_SECRET` が App の Secret と一致していない | 揃えて `pnpm dev` を再起動し、Recent Deliveries から Redeliver |
 | ログに何も出ず、Recent Deliveries が 502 / 530 | Webhook URL が古い tunnel のまま、または tunnel が止まっている | 「2 回目以降の起動」の手順で URL を更新する |
 | 数秒後に `job failed after retries` が出る | App ID か Private key の誤り、またはリポジトリが未インストール | エラー内容を確認し、`.env` を直して再起動する |
-| 秘密鍵の読み込みでエラーになる | `GITHUB_PRIVATE_KEY` が正しく読めていない | 既存の行を消し、手順 4 のコマンドで入れ直す |
+| 秘密鍵の読み込みでエラーになる | `GITHUB_PRIVATE_KEY` が正しく読めていない | 手順 4 のコマンドで入れ直す |
 | `pnpm tunnel` が `failed to dial to edge with quic: timeout` | 古いスクリプトで QUIC 接続している | `main` を取り込む。または `cloudflared tunnel --protocol http2 --edge-ip-version 4 --url http://localhost:3000` で起動する |
 
 tunnel の疎通だけを確かめるとき（`<host>` は tunnel のホスト名）:

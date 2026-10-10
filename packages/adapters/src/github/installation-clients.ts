@@ -6,7 +6,7 @@ export type GitHubAppCredentials = { appId: string; privateKey: string };
 // 404 / 410 は呼び出し側で「存在しない」として扱うので、request-log のエラー出力から外す。
 // それ以外の失敗は例外として呼び出し側に届く
 const HANDLED_STATUS = / - (404|410) with id /;
-const octokitLog = {
+export const octokitLog = {
   debug: () => {},
   info: () => {},
   warn: console.warn,
