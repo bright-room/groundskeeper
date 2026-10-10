@@ -41,7 +41,7 @@ pnpm tunnel                               # 別ターミナル。Cloudflare Tunn
 
 `pnpm tunnel` は `https://<ランダム>.trycloudflare.com` を表示する（Cloudflare アカウント不要）。
 URL は起動のたびに変わるので、そのたびに App の Webhook URL を `https://<ランダム>.trycloudflare.com/webhook` に更新する。
-`cloudflared` は `mise install` で入る。
+`cloudflared` は `mise install` で入る。UDP や IPv6 が通らないネットワークでも繋がるよう、QUIC ではなく HTTP/2（TCP 443）・IPv4 で接続する。
 
 秘密鍵の読み込みでエラーになる場合は PKCS#8 に変換する:
 `openssl pkcs8 -topk8 -inform PEM -outform PEM -nocrypt -in app.pem -out app-pkcs8.pem`
