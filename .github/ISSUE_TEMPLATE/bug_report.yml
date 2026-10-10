@@ -1,0 +1,49 @@
+name: Bug report
+description: Something does not work as the documentation describes
+labels: ["Kind: Bug Fix"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        **A security issue does not belong here.** A secret leaking into a log or comment,
+        a forged webhook being processed, issue content that makes groundskeeper act outside
+        its job — report it privately through the **Security** tab (*Report a
+        vulnerability*); see
+        [SECURITY.md](https://github.com/bright-room/groundskeeper/blob/main/SECURITY.md).
+
+        Anything else that behaves differently from the documentation — an error, an event
+        that is not handled, a wrong label or comment — belongs here.
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: What `git rev-parse HEAD` prints in the checkout you ran.
+    validations:
+      required: true
+  - type: textarea
+    id: setup
+    attributes:
+      label: How you ran it
+      description: |
+        The command (`pnpm dev` or otherwise), the GitHub App's permissions and subscribed
+        events, and `.github/groundskeeper.yml` if you have one. Do not paste `.env`.
+      render: shell
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: |
+        The issue or comment you created (or the webhook delivery that triggered it), what
+        you expected groundskeeper to do, and what it did instead.
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        The output of `pnpm dev` around the event, and the response shown in the App's
+        Recent Deliveries if relevant. Remove any key, secret or token before pasting.
+      render: text

@@ -1,0 +1,27 @@
+name: Feature request
+description: Suggest something new groundskeeper should do
+labels: ["Kind: Feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        groundskeeper is a GitHub App that looks after repositories for their maintainers:
+        triaging issues and moderating comments. A proposal should fit that job and work
+        with the App's permissions.
+  - type: textarea
+    id: problem
+    attributes:
+      label: The problem you want solved
+      description: What you do by hand today as a maintainer, and where groundskeeper falls short.
+    validations:
+      required: true
+  - type: textarea
+    id: idea
+    attributes:
+      label: What you have in mind
+      description: Which events it would react to and what it would do (labels, comments, ...).
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: What you do instead today
+      description: The workaround you use now (by hand, GitHub Actions, another app), if any.

@@ -1,0 +1,37 @@
+name: Enhancement request
+description: Suggest an improvement to something groundskeeper already does
+labels: ["Kind: Enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        For a change to existing behavior, configuration or documentation — it is noisy,
+        misses cases, is hard to set up. Something groundskeeper does not do at all is a
+        **Feature request**; something that does not work as documented is a **Bug report**.
+  - type: input
+    id: target
+    attributes:
+      label: What to improve
+      description: The behavior, setting or document this is about.
+      placeholder: the comment moderation, the setup guide, ...
+    validations:
+      required: true
+  - type: textarea
+    id: current
+    attributes:
+      label: How it works today
+      description: What it does now, and where that falls short for you.
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: How it should work
+      description: What you would change.
+    validations:
+      required: true
+  - type: input
+    id: commit
+    attributes:
+      label: Commit
+      description: What `git rev-parse HEAD` prints, so the current behavior can be checked.
