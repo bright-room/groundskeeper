@@ -98,6 +98,8 @@ pnpm dev        # ターミナル 2
 | その Issue にコメントする | `[comment:created] <owner>/<repo>#N by <login> (<文字数> chars)` |
 | `pnpm smoke:llm` を実行する | `{ language: ..., sentiment: ... }` |
 
+bot（groundskeeper 自身や Renovate など）が起こしたイベントは処理しないので、ログにも出ない。
+
 Issue 作成と同時に担当者やラベルを付けると、`[issue:assigned]` などが `opened` より先に出ることがある。同時に届いたイベントを並行して処理しているためで、問題ない。
 
 ## 2 回目以降の起動
