@@ -36,4 +36,13 @@ describe("toJob", () => {
     expect(toJob("issue_comment", { ...base, action: "deleted", comment: { id: 1 } })).toBeNull();
     expect(toJob("push", { ...base, action: "opened" })).toBeNull();
   });
+
+  it("bot が起こしたイベントは無視する", () => {
+    const bot = { sender: { type: "Bot" } };
+    expect(toJob("issues", { ...base, ...bot, action: "opened" })).toBeNull();
+    expect(
+      toJob("issue_comment", { ...base, ...bot, action: "created", comment: { id: 1 } }),
+    ).toBeNull();
+    expect(toJob("issues", { ...base, sender: { type: "User" }, action: "opened" })).not.toBeNull();
+  });
 });
