@@ -105,11 +105,11 @@ Issue 作成と同時に担当者やラベルを付けると、`[issue:assigned]
 quick tunnel の URL は起動のたびに変わる。
 
 1. `pnpm tunnel` と `pnpm dev` を起動する
-2. App 設定 → General → Webhook URL を新しい URL + `/webhook` に変えて **Save changes**
+2. App 設定 → General → Webhook URL を新しい URL + `/webhook` に変えて Save changes
 
 ## うまくいかないとき
 
-まず App 設定 → **Advanced** → **Recent Deliveries** でレスポンスを確認する。GitHub 側の設定が原因の場合は [github-app.md の「Webhook が届かないとき」](github-app.md#webhook-が届かないとき) も参照。
+まず App 設定 → Advanced → Recent Deliveries でレスポンスを確認する。GitHub 側の設定が原因の場合は [github-app.md の「Webhook が届かないとき」](github-app.md#webhook-が届かないとき) も参照。
 
 | 症状 | 原因 | 対処 |
 |---|---|---|
@@ -119,7 +119,7 @@ quick tunnel の URL は起動のたびに変わる。
 | 秘密鍵の読み込みでエラーになる | `GITHUB_PRIVATE_KEY` が正しく読めていない | 手順 4 のコマンドで入れ直す |
 | `pnpm tunnel` が `failed to dial to edge with quic: timeout` | 古いスクリプトで QUIC 接続している | `main` を取り込む。または `cloudflared tunnel --protocol http2 --edge-ip-version 4 --url http://localhost:3000` で起動する |
 
-tunnel の疎通だけを確かめるとき（`<host>` は tunnel のホスト名）:
+tunnel の疎通だけを確かめるときは、次のコマンドを使う（`<host>` は tunnel のホスト名）。
 
 ```bash
 curl -s -o /dev/null -w "%{http_code}\n" https://<host>/healthz                  # 200

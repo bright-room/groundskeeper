@@ -3,7 +3,7 @@
 GitHub App that takes care of repositories on behalf of maintainers — issue triage, comment moderation and more.
 
 > 開発中。現在は Webhook の受信、GitHub App 認証、設定ファイルの読み込み、Claude API の呼び出しまでを実装している。
-> 受け取った Issue・コメントはログに出すだけで、ラベル付与などの判定はまだ行わない。動かせるのはローカル実行のみ。
+> 受け取った Issue・コメントはログに出すだけで、ラベル付与などの判定はまだ行わない。また、ローカルでのみ動かせる。
 
 ## 使い方
 
