@@ -2,7 +2,7 @@
   "name": "groundskeeper",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@12.4.2",
+  "packageManager": "pnpm@12.9.0",
   "engines": {
     "node": ">=26"
   },
