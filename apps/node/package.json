@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "node --env-file=../../.env --import tsx src/main.ts",
-    "tunnel": "cloudflared tunnel --url http://localhost:3000",
+    "tunnel": "cloudflared tunnel --protocol http2 --edge-ip-version 4 --url http://localhost:3000",
     "smoke:llm": "node --env-file=../../.env --import tsx scripts/llm-smoke.ts",
     "test": "vitest run",
     "typecheck": "tsc --noEmit"
